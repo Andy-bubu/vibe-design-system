@@ -1,8 +1,8 @@
 import { ArrowRight, Layers3, Orbit, Sparkles } from 'lucide-react';
+import { Button as AntButton, Card, Space, Tag, Typography } from 'antd';
 
 import type { AppRoute } from '@/App';
 import { MetricCard } from '@/components/ui/MetricCard';
-import { Button } from '@/components/ui/Button';
 
 interface HomePageProps {
   navigate: (route: AppRoute) => void;
@@ -23,33 +23,43 @@ export function HomePage({ navigate }: HomePageProps) {
               AI Native Design System
             </div>
 
-            <h1 className="mt-6 text-4xl font-semibold tracking-[-0.05em] text-fg-primary sm:text-5xl xl:text-6xl">
+            <Typography.Title className="!mb-0 !mt-6 !text-4xl !font-semibold !tracking-[-0.05em] !text-fg-primary sm:!text-5xl xl:!text-6xl">
               专为智能代码生成与高效复用打造的 React 高级设计系统
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-fg-secondary sm:text-lg">
+            </Typography.Title>
+            <Typography.Paragraph className="!mb-0 !mt-5 !max-w-2xl !text-base !leading-8 !text-fg-secondary sm:!text-lg">
               统一的 Token、克制的交互语言与可直接复制的代码示例，让设计、前端与 AI 在同一套界面标准中稳定协作。
-            </p>
+            </Typography.Paragraph>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button trailingIcon={<ArrowRight className="size-4" aria-hidden="true" />} onClick={() => navigate({ page: 'components', componentId: 'button' })}>
+            <Space wrap size={12} className="!mt-8">
+              <AntButton
+                type="primary"
+                icon={<ArrowRight className="size-4" aria-hidden="true" />}
+                onClick={() => navigate({ page: 'components', componentId: 'button' })}
+              >
                 浏览组件库
-              </Button>
-              <Button variant="secondary" leadingIcon={<Layers3 className="size-4" aria-hidden="true" />} onClick={() => navigate({ page: 'tokens' })}>
+              </AntButton>
+              <AntButton
+                icon={<Layers3 className="size-4" aria-hidden="true" />}
+                onClick={() => navigate({ page: 'tokens' })}
+              >
                 查看设计令牌
-              </Button>
-            </div>
+              </AntButton>
+            </Space>
           </div>
         </div>
 
         <div className="grid gap-4">
           <MetricCard title="文档覆盖率" value="24 个模块" trend={{ value: 12.6, isPositive: true }} icon={<Orbit className="size-4" />} />
           <MetricCard title="Token 一致性" value="98.4%" trend={{ value: 3.2, isPositive: true }} icon={<Layers3 className="size-4" />} />
-          <div className="doc-panel p-5">
-            <p className="text-sm font-semibold tracking-[-0.02em] text-fg-primary">文档定位</p>
-            <p className="mt-3 text-sm leading-7 text-fg-secondary">
+          <Card bordered={false} className="doc-panel">
+            <Tag color="blue">Portal Positioning</Tag>
+            <Typography.Title level={5} className="!mb-0 !mt-3 !tracking-[-0.02em] !text-fg-primary">
+              文档定位
+            </Typography.Title>
+            <Typography.Paragraph className="!mb-0 !mt-3 !text-sm !leading-7 !text-fg-secondary">
               这不是只给人看的组件目录，而是给设计、前端和 AI 一起复用的执行界面。每一页都保留真实预览、原子规范与可复制代码。
-            </p>
-          </div>
+            </Typography.Paragraph>
+          </Card>
         </div>
       </section>
 
@@ -68,10 +78,14 @@ export function HomePage({ navigate }: HomePageProps) {
             description: '界面文案、注释说明与交互标签统一中文，降低团队沟通与交付成本。',
           },
         ].map((item) => (
-          <article key={item.title} className="doc-panel p-5">
-            <p className="text-lg font-semibold tracking-[-0.03em] text-fg-primary">{item.title}</p>
-            <p className="mt-3 text-sm leading-7 text-fg-secondary">{item.description}</p>
-          </article>
+          <Card key={item.title} bordered={false} className="doc-panel">
+            <Typography.Title level={5} className="!mb-0 !tracking-[-0.03em] !text-fg-primary">
+              {item.title}
+            </Typography.Title>
+            <Typography.Paragraph className="!mb-0 !mt-3 !text-sm !leading-7 !text-fg-secondary">
+              {item.description}
+            </Typography.Paragraph>
+          </Card>
         ))}
       </section>
     </div>

@@ -67,6 +67,11 @@
   #root {
     @apply min-h-screen;
   }
+
+  .ant-app {
+    @apply min-h-screen;
+    background: transparent;
+  }
 }
 
 @layer components {
@@ -78,6 +83,18 @@
   .doc-panel {
     @apply rounded-[1.5rem] border border-border-subtle bg-surface-elevated shadow-soft backdrop-blur-sm;
     background-color: rgba(255, 255, 255, 0.78);
+  }
+
+  .portal-menu.ant-menu {
+    background: transparent;
+  }
+
+  .portal-menu .ant-menu-item,
+  .portal-menu .ant-menu-submenu-title {
+    height: auto;
+    line-height: 1.4;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
   }
 }
 

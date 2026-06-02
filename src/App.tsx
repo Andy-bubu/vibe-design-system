@@ -46,6 +46,10 @@ export type AppRoute =
 function parseRoute(pathname: string): AppRoute {
   const localPath = stripBase(pathname);
 
+  if (localPath === '/') {
+    return { page: 'components', componentId: 'button' };
+  }
+
   if (localPath === '/tokens') {
     return { page: 'tokens' };
   }
@@ -59,7 +63,7 @@ function parseRoute(pathname: string): AppRoute {
     return { page: 'components', componentId };
   }
 
-  return { page: 'home' };
+  return { page: 'components', componentId: 'button' };
 }
 
 function buildPath(route: AppRoute) {
@@ -131,13 +135,15 @@ function App() {
   const navigationItems = useMemo(
     () => [
       {
-        label: '首页',
-        caption: '系统概览与入口',
+        key: 'home',
+        label: '总览',
+        caption: '门户概览与入口',
         isActive: route.page === 'home',
         icon: <ChevronRight className="size-4" aria-hidden="true" />,
         onClick: () => navigate({ page: 'home' }),
       },
       {
+        key: 'tokens',
         label: '设计令牌',
         caption: '颜色、阴影与排版规范',
         isActive: route.page === 'tokens',
@@ -145,6 +151,7 @@ function App() {
         onClick: () => navigate({ page: 'tokens' }),
       },
       {
+        key: 'components',
         label: '组件库',
         caption: '交互预览与代码复制',
         isActive: route.page === 'components',
@@ -152,6 +159,7 @@ function App() {
         onClick: () => navigate({ page: 'components', componentId: route.page === 'components' ? route.componentId : 'button' }),
       },
       {
+        key: 'quick-start',
         label: '快速上手',
         caption: 'Vibe Coding 复用指南',
         isActive: route.page === 'quick-start',

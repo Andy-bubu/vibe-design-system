@@ -1,3 +1,5 @@
+import { Card, Col, Row, Space, Tag, Typography } from 'antd';
+
 import { SectionHeader } from '@/components/docs/SectionHeader';
 
 const colorSections = [
@@ -61,77 +63,114 @@ export function DesignTokensPage() {
       <section className="space-y-5">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-semibold tracking-[-0.03em] text-fg-primary">颜色系统</h2>
-            <p className="mt-2 text-sm leading-6 text-fg-secondary">展示品牌色、中性色与语义色，确保组件在所有页面保持一致的层级关系。</p>
+            <Typography.Title level={2} className="!mb-0 !text-fg-primary">
+              颜色系统
+            </Typography.Title>
+            <Typography.Paragraph className="!mb-0 !mt-2 !text-sm !leading-6 !text-fg-secondary">
+              展示品牌色、中性色与语义色，确保组件在所有页面保持一致的层级关系。
+            </Typography.Paragraph>
           </div>
         </div>
 
-        <div className="grid gap-4 xl:grid-cols-3">
+        <Row gutter={[16, 16]}>
           {colorSections.map((section) => (
-            <article key={section.title} className="doc-panel p-5">
-              <h3 className="text-lg font-semibold tracking-[-0.02em] text-fg-primary">{section.title}</h3>
-              <div className="mt-4 space-y-3">
-                {section.items.map((item) => (
-                  <div key={item.name} className="rounded-2xl border border-border-subtle bg-bg-canvas/70 p-3">
-                    <div className={`h-16 rounded-xl border border-white/50 ${item.swatch}`} />
-                    <div className="mt-3 flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold text-fg-primary">{item.name}</p>
-                        <p className="mt-1 text-xs text-fg-secondary">{item.value}</p>
+            <Col key={section.title} xs={24} xl={8}>
+              <Card className="doc-panel h-full border-border-subtle" bordered={false}>
+                <Typography.Title level={4} className="!mb-0 !text-fg-primary">
+                  {section.title}
+                </Typography.Title>
+                <div className="mt-4 space-y-3">
+                  {section.items.map((item) => (
+                    <Card key={item.name} size="small" className="bg-bg-canvas/70" bordered={false}>
+                      <div className={`h-16 rounded-xl border border-white/50 ${item.swatch}`} />
+                      <div className="mt-3 flex items-start justify-between gap-3">
+                        <div>
+                          <Typography.Text strong className="!text-sm !text-fg-primary">
+                            {item.name}
+                          </Typography.Text>
+                          <br />
+                          <Typography.Text className="!text-xs !text-fg-secondary">{item.value}</Typography.Text>
+                        </div>
+                        <Tag>{item.value}</Tag>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <article className="doc-panel p-5">
-          <h2 className="text-2xl font-semibold tracking-[-0.03em] text-fg-primary">阴影与圆角</h2>
-          <p className="mt-2 text-sm leading-6 text-fg-secondary">通过固定的阴影层级和圆角体系，维持卡片、浮层和表单的统一质感。</p>
-
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            {radiusItems.map((item) => (
-              <div key={item.label} className="rounded-2xl border border-border-subtle bg-bg-canvas/75 p-4">
-                <div className={`h-20 border border-brand-primary/15 bg-brand-primary/10 ${item.preview}`} />
-                <p className="mt-3 text-sm font-semibold text-fg-primary">{item.label}</p>
-                <p className="mt-1 text-sm text-fg-secondary">{item.value}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-5 space-y-3">
-            {shadowItems.map((item) => (
-              <div key={item.label} className="rounded-2xl border border-border-subtle bg-bg-canvas/75 p-4">
-                <p className="text-sm font-semibold text-fg-primary">{item.label}</p>
-                <p className="mt-1 text-sm leading-6 text-fg-secondary">{item.value}</p>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="doc-panel p-5">
-          <h2 className="text-2xl font-semibold tracking-[-0.03em] text-fg-primary">字体排版</h2>
-          <p className="mt-2 text-sm leading-6 text-fg-secondary">兼顾英文技术栈与中文说明文字，保持高密度信息下的高级感与清晰度。</p>
-
-          <div className="mt-5 space-y-3">
-            {typographyItems.map((item) => (
-              <div key={item.label} className="rounded-2xl border border-border-subtle bg-bg-canvas/75 p-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-fg-primary">{item.label}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.16em] text-fg-secondary">{item.meta}</p>
-                  </div>
+                    </Card>
+                  ))}
                 </div>
-                <p className="mt-4 text-lg leading-8 text-fg-primary">{item.sample}</p>
-              </div>
-            ))}
-          </div>
-        </article>
+              </Card>
+            </Col>
+          ))}
+        </Row>
       </section>
+
+      <Row gutter={[16, 16]}>
+        <Col xs={24} xl={12}>
+          <Card className="doc-panel h-full border-border-subtle" bordered={false}>
+            <Typography.Title level={2} className="!mb-0 !text-fg-primary">
+              阴影与圆角
+            </Typography.Title>
+            <Typography.Paragraph className="!mb-0 !mt-2 !text-sm !leading-6 !text-fg-secondary">
+              通过固定的阴影层级和圆角体系，维持卡片、浮层和表单的统一质感。
+            </Typography.Paragraph>
+
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              {radiusItems.map((item) => (
+                <Card key={item.label} bordered={false} className="bg-bg-canvas/75">
+                  <div className={`h-20 border border-brand-primary/15 bg-brand-primary/10 ${item.preview}`} />
+                  <Typography.Text strong className="!mt-3 !block !text-sm !text-fg-primary">
+                    {item.label}
+                  </Typography.Text>
+                  <Typography.Text className="!mt-1 !text-sm !text-fg-secondary">{item.value}</Typography.Text>
+                </Card>
+              ))}
+            </div>
+
+            <div className="mt-5 space-y-3">
+              {shadowItems.map((item) => (
+                <Card key={item.label} bordered={false} className="bg-bg-canvas/75">
+                  <Typography.Text strong className="!text-sm !text-fg-primary">
+                    {item.label}
+                  </Typography.Text>
+                  <Typography.Paragraph className="!mb-0 !mt-1 !text-sm !leading-6 !text-fg-secondary">
+                    {item.value}
+                  </Typography.Paragraph>
+                </Card>
+              ))}
+            </div>
+          </Card>
+        </Col>
+
+        <Col xs={24} xl={12}>
+          <Card className="doc-panel h-full border-border-subtle" bordered={false}>
+            <Typography.Title level={2} className="!mb-0 !text-fg-primary">
+              字体排版
+            </Typography.Title>
+            <Typography.Paragraph className="!mb-0 !mt-2 !text-sm !leading-6 !text-fg-secondary">
+              兼顾英文技术栈与中文说明文字，保持高密度信息下的高级感与清晰度。
+            </Typography.Paragraph>
+
+            <div className="mt-5 space-y-3">
+              {typographyItems.map((item) => (
+                <Card key={item.label} bordered={false} className="bg-bg-canvas/75">
+                  <Space direction="vertical" size={4} className="w-full">
+                    <div>
+                      <Typography.Text strong className="!text-sm !text-fg-primary">
+                        {item.label}
+                      </Typography.Text>
+                      <br />
+                      <Typography.Text className="!text-xs !uppercase !tracking-[0.16em] !text-fg-secondary">
+                        {item.meta}
+                      </Typography.Text>
+                    </div>
+                    <Typography.Paragraph className="!mb-0 !mt-4 !text-lg !leading-8 !text-fg-primary">
+                      {item.sample}
+                    </Typography.Paragraph>
+                  </Space>
+                </Card>
+              ))}
+            </div>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 }

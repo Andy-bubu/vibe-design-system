@@ -1,27 +1,35 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { AppstoreOutlined, CodeOutlined, InboxOutlined, NotificationOutlined } from '@ant-design/icons';
+import { Card, Collapse, Menu, Tag, Typography } from 'antd';
 
 import { CodeBlock } from '@/components/docs/CodeBlock';
 import { PreviewSandbox } from '@/components/docs/PreviewSandbox';
 import { SectionHeader } from '@/components/docs/SectionHeader';
 import { componentDocs, componentGroups, getComponentDoc } from '@/content/componentDocs';
-import { cn } from '@/utils/cn';
 
 interface ComponentsCatalogPageProps {
   selectedComponentId: string;
   onSelectComponent: (componentId: string) => void;
 }
 
+const defaultOpenGroups = {
+  foundations: true,
+  inputs: true,
+  display: true,
+  feedback: true,
+};
+
 export function ComponentsCatalogPage({ selectedComponentId, onSelectComponent }: ComponentsCatalogPageProps) {
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    foundations: true,
-    inputs: true,
-    display: true,
-    feedback: true,
-  });
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(defaultOpenGroups);
 
   const activeDoc = getComponentDoc(selectedComponentId);
   const PreviewComponent = activeDoc.preview;
+  const groupIcons = {
+    foundations: <AppstoreOutlined />,
+    inputs: <InboxOutlined />,
+    display: <CodeOutlined />,
+    feedback: <NotificationOutlined />,
+  };
 
   return (
     <div className="space-y-8">
@@ -34,68 +42,63 @@ export function ComponentsCatalogPage({ selectedComponentId, onSelectComponent }
       <div className="grid gap-5 xl:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="doc-panel h-fit p-4">
           <div className="mb-4">
-            <p className="text-sm font-semibold tracking-[-0.02em] text-fg-primary">组件分类导航</p>
-            <p className="mt-1 text-sm leading-6 text-fg-secondary">支持折叠切换，并高亮当前正在查看的组件。</p>
+            <Typography.Text strong className="!text-sm !tracking-[-0.02em] !text-fg-primary">
+              组件分类导航
+            </Typography.Text>
+            <Typography.Paragraph className="!mb-0 !mt-1 !text-sm !leading-6 !text-fg-secondary">
+              支持折叠切换，并高亮当前正在查看的组件。
+            </Typography.Paragraph>
           </div>
 
-          <div className="space-y-3">
-            {componentGroups.map((group) => {
-              const isOpen = group.items.includes(activeDoc.id as never) ? true : openGroups[group.id];
-
-              return (
-                <section key={group.id} className="rounded-2xl border border-border-subtle bg-bg-canvas/70 p-3">
-                  <button
-                    type="button"
-                    onClick={() => setOpenGroups((current) => ({ ...current, [group.id]: !current[group.id] }))}
-                    className="flex w-full items-center justify-between gap-3 px-1 py-1.5 text-left"
-                  >
-                    <span className="text-sm font-semibold text-fg-primary">{group.label}</span>
-                    <ChevronDown
-                      className={cn('size-4 text-fg-secondary transition-transform duration-300', isOpen && 'rotate-180')}
-                      aria-hidden="true"
-                    />
-                  </button>
-
-                  {isOpen ? (
-                    <div className="mt-2 space-y-1">
-                      {group.items.map((itemId) => {
-                        const doc = componentDocs.find((item) => item.id === itemId);
-                        if (!doc) {
-                          return null;
-                        }
-
-                        const isActive = doc.id === activeDoc.id;
-
-                        return (
-                          <button
-                            key={doc.id}
-                            type="button"
-                            onClick={() => onSelectComponent(doc.id)}
-                            className={cn(
-                              'w-full rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-300',
-                              isActive
-                                ? 'bg-brand-primary/10 font-semibold text-brand-primary'
-                                : 'text-fg-secondary hover:bg-surface-overlay hover:text-fg-primary',
-                            )}
-                          >
-                            {doc.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ) : null}
-                </section>
-              );
-            })}
-          </div>
+          <Collapse
+            ghost
+            activeKey={componentGroups.filter((group) => group.items.includes(activeDoc.id as never) || openGroups[group.id]).map((group) => group.id)}
+            onChange={(keys) => {
+              const nextKeys = Array.isArray(keys) ? keys : [keys];
+              setOpenGroups({
+                foundations: nextKeys.includes('foundations'),
+                inputs: nextKeys.includes('inputs'),
+                display: nextKeys.includes('display'),
+                feedback: nextKeys.includes('feedback'),
+              });
+            }}
+            items={componentGroups.map((group) => ({
+              key: group.id,
+              label: group.label,
+              extra: groupIcons[group.id as keyof typeof groupIcons],
+              children: (
+                <Menu
+                  mode="inline"
+                  selectedKeys={[activeDoc.id]}
+                  items={group.items
+                    .map((itemId) => {
+                      const doc = componentDocs.find((item) => item.id === itemId);
+                      return doc
+                        ? {
+                            key: doc.id,
+                            label: doc.label,
+                            onClick: () => onSelectComponent(doc.id),
+                          }
+                        : null;
+                    })
+                    .filter(Boolean)}
+                  className="border-0 bg-transparent"
+                />
+              ),
+            }))}
+          />
         </aside>
 
         <div className="space-y-5">
-          <section className="doc-panel p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-fg-secondary">{activeDoc.groupId}</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-fg-primary">{activeDoc.label}</h2>
-            <p className="mt-4 max-w-3xl text-base leading-7 text-fg-secondary">{activeDoc.description}</p>
-          </section>
+          <Card className="doc-panel border-border-subtle">
+            <Tag color="blue">{activeDoc.groupId}</Tag>
+            <Typography.Title level={2} className="!mb-0 !mt-3 !text-fg-primary">
+              {activeDoc.label}
+            </Typography.Title>
+            <Typography.Paragraph className="!mb-0 !mt-4 !max-w-3xl !text-base !leading-7 !text-fg-secondary">
+              {activeDoc.description}
+            </Typography.Paragraph>
+          </Card>
 
           <PreviewSandbox>
             <PreviewComponent />
