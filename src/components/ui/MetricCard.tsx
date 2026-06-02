@@ -25,7 +25,7 @@ export function MetricCard({
   icon,
   className,
 }: MetricCardProps) {
-  const trendLabel = trend ? `${trend.isPositive ? 'Up' : 'Down'} ${Math.abs(trend.value)}%` : null;
+  const trendLabel = trend ? `${trend.isPositive ? '上升' : '下降'} ${Math.abs(trend.value)}%` : null;
 
   return (
     <article
