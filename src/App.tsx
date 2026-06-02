@@ -8,6 +8,34 @@ import { HomePage } from '@/pages/HomePage';
 import { QuickStartPage } from '@/pages/QuickStartPage';
 
 const componentRoutePrefix = '/components';
+const basePath = (() => {
+  const rawBase = import.meta.env.BASE_URL ?? '/';
+  if (rawBase === '/') {
+    return '';
+  }
+
+  return rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase;
+})();
+
+function stripBase(pathname: string) {
+  if (!basePath) {
+    return pathname || '/';
+  }
+
+  if (pathname === basePath) {
+    return '/';
+  }
+
+  if (pathname.startsWith(`${basePath}/`)) {
+    return pathname.slice(basePath.length) || '/';
+  }
+
+  return pathname || '/';
+}
+
+function withBase(pathname: string) {
+  return basePath ? `${basePath}${pathname}` : pathname;
+}
 
 export type AppRoute =
   | { page: 'home' }
@@ -16,16 +44,18 @@ export type AppRoute =
   | { page: 'quick-start' };
 
 function parseRoute(pathname: string): AppRoute {
-  if (pathname === '/tokens') {
+  const localPath = stripBase(pathname);
+
+  if (localPath === '/tokens') {
     return { page: 'tokens' };
   }
 
-  if (pathname === '/quick-start') {
+  if (localPath === '/quick-start') {
     return { page: 'quick-start' };
   }
 
-  if (pathname === componentRoutePrefix || pathname.startsWith(`${componentRoutePrefix}/`)) {
-    const componentId = pathname.slice(componentRoutePrefix.length + 1) || undefined;
+  if (localPath === componentRoutePrefix || localPath.startsWith(`${componentRoutePrefix}/`)) {
+    const componentId = localPath.slice(componentRoutePrefix.length + 1) || undefined;
     return { page: 'components', componentId };
   }
 
@@ -33,16 +63,34 @@ function parseRoute(pathname: string): AppRoute {
 }
 
 function buildPath(route: AppRoute) {
+  const localPath = (() => {
+    switch (route.page) {
+      case 'tokens':
+        return '/tokens';
+      case 'components':
+        return route.componentId ? `${componentRoutePrefix}/${route.componentId}` : componentRoutePrefix;
+      case 'quick-start':
+        return '/quick-start';
+      case 'home':
+      default:
+        return '/';
+    }
+  })();
+
+  return withBase(localPath);
+}
+
+function buildRouteKey(route: AppRoute) {
   switch (route.page) {
     case 'tokens':
-      return '/tokens';
+      return 'tokens';
     case 'components':
-      return route.componentId ? `${componentRoutePrefix}/${route.componentId}` : componentRoutePrefix;
+      return route.componentId ? `components:${route.componentId}` : 'components';
     case 'quick-start':
-      return '/quick-start';
+      return 'quick-start';
     case 'home':
     default:
-      return '/';
+      return 'home';
   }
 }
 
@@ -116,7 +164,7 @@ function App() {
 
   return (
     <PortalShell navigationItems={navigationItems}>
-      <div key={buildPath(route)} className="animate-route-enter">
+      <div key={buildRouteKey(route)} className="animate-route-enter">
         {route.page === 'home' ? <HomePage navigate={navigate} /> : null}
         {route.page === 'tokens' ? <DesignTokensPage /> : null}
         {route.page === 'components' ? (
